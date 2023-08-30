@@ -59,8 +59,8 @@ class MainActivity : ComponentActivity() {
         println("config1: $config1")
         println("datastore read cost: ${end2-start2}")
 
-        AppDataStore.setSexSync("A", SexType.MAN)
-        println("read success: ${AppDataStore.getSexSync("A") == SexType.MAN}")
+        SettingDataStore.setSexSync("A", SexType.MAN)
+        println("read success: ${SettingDataStore.getSexSync("A") == SexType.MAN}")
     }
 }
 

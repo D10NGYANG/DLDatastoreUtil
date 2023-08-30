@@ -5,7 +5,7 @@ import com.d10ng.datastore.DataStoreOwner
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
 
-object AppDataStore: DataStoreOwner("settings") {
+object AppDataStore: DataStoreOwner("appdata") {
 
     fun getConfig1Flow() = dataStore.data.map { it[stringPreferencesKey("config1")] }
     suspend fun getConfig1() = getConfig1Flow().first()
