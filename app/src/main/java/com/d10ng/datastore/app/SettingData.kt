@@ -3,6 +3,7 @@ package com.d10ng.datastore.app
 import com.d10ng.datastore.annotation.PreferenceDataStore
 import com.d10ng.datastore.annotation.PreferenceKey
 import com.d10ng.datastore.app.constant.SexType
+import com.d10ng.datastore.app.data.Person
 
 @PreferenceDataStore(name = "settings")
 interface SettingData {
@@ -36,4 +37,7 @@ interface SettingData {
 
     @PreferenceKey(keys = [String::class])
     val things: Set<String>
+
+    @PreferenceKey(keys = [String::class])
+    val person: Person
 }

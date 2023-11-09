@@ -2,14 +2,18 @@
 
 jetpack datastore 封装工具，减少模版代码，确保类型安全，避免类型或者键名不一致导致的异常；
 
-*最新版本`0.0.1`*
+*最新版本`0.0.2`*
 
 ## 参考
 - [DylanCaiCoding/DataStoreKTX](https://github.com/DylanCaiCoding/DataStoreKTX)
 
 # 特性
 - [x] 自动生成模版代码
+- [x] 支持带参数的key
+- [x] 支持同步与异步方法
+- [x] 支持自定义datastore名称
 - [x] 支持枚举类型数据
+- [x] 支持基于kotlin.serialization的序列化data class类型数据
 
 ## 安装说明
 1 添加Maven仓库，打开项目根目录`settings.gradle.kts`文件添加以下内容：
@@ -28,12 +32,16 @@ dependencyResolutionManagement {
 ```kts
 plugins {
     id("com.google.devtools.ksp") version ksp_ver apply false
+    // 可选，如果需要支持data class类型数据
+    id("org.jetbrains.kotlin.plugin.serialization") version kotlin_ver apply false
 }
 ```
 打开项目模块（一般为`app`）目录下的`build.gradle.kts`文件添加以下内容：
 ```kts
 plugins {
-    id("com.google.devtools.ksp") version ksp_ver
+    id("com.google.devtools.ksp")
+    // 可选，如果需要支持data class类型数据
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 ```
 
@@ -46,6 +54,8 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    // kotlinx.serialization 可选，如果需要支持data class类型数据
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }
 ```
 
@@ -95,8 +105,9 @@ object SettingDataStore : DataStoreOwner("settings") {
 ```
 > 注意：
 > - `datastore`的`key`必须是`val`类型，且必须有`@PreferenceKey`注解；
-> - `datastore`的`key`的类型必须是`String`、`Int`、`Long`、`Float`、`Double`、`Boolean`、`Set<String>`、`Enum`类型；
+> - `datastore`的`key`的类型必须是`String`、`Int`、`Long`、`Float`、`Double`、`Boolean`、`Set<String>`、`Enum`、`data class`类型；
 > - Enum枚举类型的数据解析与反解析是根据枚举的`name`属性来进行的，所以不要轻易修改枚举值；
+> - data class类型的数据解析与反解析是基于kotlin.serialization的，所以需要在data class类上添加`@Serializable`注解，且不要轻易修改data class的属性名；
 > - 除非别无选择，否则不建议使用同步方法，会阻塞主线程，耗时会比MMKV与传统的Spf要长，优先使用异步方法；
 
 3 创建带参数的`datastore`的`key`，例如：

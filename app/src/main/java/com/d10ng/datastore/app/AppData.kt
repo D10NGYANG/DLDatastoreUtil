@@ -2,8 +2,10 @@ package com.d10ng.datastore.app
 
 import androidx.datastore.preferences.core.*
 import com.d10ng.datastore.DataStoreOwner
+import com.d10ng.datastore.app.data.Person
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.encodeToString
 
 object AppDataStore: DataStoreOwner("appdata") {
 
@@ -24,4 +26,8 @@ object AppDataStore: DataStoreOwner("appdata") {
     fun getSexSync(key0: String) = runBlocking { getSex(key0) }
     suspend fun setSex(key0: String, value: com.d10ng.datastore.app.constant.SexType) = dataStore.edit { it[stringPreferencesKey("sex:${key0}")] = value.toString() }
     fun setSexSync(key0: String, value: com.d10ng.datastore.app.constant.SexType) = runBlocking { setSex(key0, value) }
+
+    fun getPersonFlow(key0: String) = dataStore.data.map { it[stringPreferencesKey("person:${key0}")]?.let { s -> json.decodeFromString<Person>(s) } }
+
+    suspend fun setPerson(key0: String, value: Person) = dataStore.edit { it[stringPreferencesKey("person:${key0}")] = json.encodeToString(value) }
 }

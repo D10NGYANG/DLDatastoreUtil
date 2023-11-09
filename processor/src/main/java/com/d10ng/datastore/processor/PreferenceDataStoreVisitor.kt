@@ -46,6 +46,7 @@ class PreferenceDataStoreVisitor(
         file += "import com.d10ng.datastore.DataStoreOwner\n"
         file += "import kotlinx.coroutines.flow.*\n"
         file += "import kotlinx.coroutines.*\n"
+        file += "import kotlinx.serialization.encodeToString\n"
         file += "\n"
 
         file += "object $fileName : DataStoreOwner(\"${name}\") {\n\n"
@@ -58,10 +59,20 @@ class PreferenceDataStoreVisitor(
             val propertyType = property.type.resolve()
             // 判断属性类型是否为枚举类型
             val isEnum = propertyType.declaration.modifiers.any { it.name.contentEquals("enum", true) }
+            // 判断属性类型是否为data class
+            val isDataClass = propertyType.declaration.modifiers.any { it.name.contentEquals("data", true) }
+            // 如果是data class类型，需要判断是否具有@Serializable注解
+            if (isDataClass) {
+                val isSerializable = propertyType.declaration.annotations.any { it.shortName.asString() == "Serializable" }
+                if (!isSerializable) {
+                    logger.error("Data class must have @Serializable annotation, but ${propertyName}: $propertyType")
+                    return
+                }
+            }
             val propertyTypePackageName = propertyType.declaration.packageName.asString()
-            // 非基础类型的数据，只支持枚举类型
-            if (propertyTypePackageName.startsWith("kotlin", false).not() && isEnum.not()) {
-                logger.error("Only support basic types and enum types, but ${propertyName}: $propertyTypePackageName")
+            // 非基础类型的数据，只支持枚举类型与data class类型
+            if (propertyTypePackageName.startsWith("kotlin", false).not() && isEnum.not() && isDataClass.not()) {
+                logger.error("Non-basic data types, only enumerated types and data class types are supported., but ${propertyName}: $propertyType")
                 return
             }
             val propertyTypeName = if (propertyTypePackageName.startsWith("kotlin", true)) propertyType.toString()
@@ -104,16 +115,24 @@ class PreferenceDataStoreVisitor(
             val propertyTypeKey = getPreferencesKeyStr(propertyTypeName.replace("kotlin.", "", true))
 
             // 枚举类型需要增加的代码
-            val getEnumPlusStr = if (isEnum) "?.let { d -> ${propertyTypeName}.valueOf(d) }" else ""
-            val setEnumPlusStr = if (isEnum) ".toString()" else ""
+            val getPlusStr = if (isEnum)
+                "?.let { s -> ${propertyTypeName}.valueOf(s) }"
+            else if (isDataClass)
+                "?.let { s -> json.decodeFromString<${propertyTypeName}>(s) } "
+            else ""
+            val setPlusStr = if (isEnum)
+                "value.toString()"
+            else if (isDataClass)
+                "json.encodeToString(value)"
+            else "value"
 
             // 生成属性的 getter 方法
-            file += "\tfun get${funName}Flow(${getInputParams}) = dataStore.data.map { it[${propertyTypeKey}(\"${key}\")]${getEnumPlusStr} }\n"
+            file += "\tfun get${funName}Flow(${getInputParams}) = dataStore.data.map { it[${propertyTypeKey}(\"${key}\")]${getPlusStr} }\n"
             file += "\tsuspend fun get${funName}(${getInputParams}) = get${funName}Flow(${getCallParams}).first()\n"
             file += "\tfun get${funName}Sync(${getInputParams}) = runBlocking { get${funName}(${getCallParams}) }\n"
 
             // 生成属性的 setter 方法
-            file += "\tsuspend fun set${funName}(${setInputParams}) = dataStore.edit { it[${propertyTypeKey}(\"${key}\")] = value${setEnumPlusStr} }\n"
+            file += "\tsuspend fun set${funName}(${setInputParams}) = dataStore.edit { it[${propertyTypeKey}(\"${key}\")] = $setPlusStr }\n"
             file += "\tfun set${funName}Sync(${setInputParams}) = runBlocking { set${funName}(${setCallParams}) }\n"
             file += "\n"
         }
