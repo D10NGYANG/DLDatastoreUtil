@@ -1,6 +1,5 @@
 package com.d10ng.datastore.processor
 
-import com.d10ng.datastore.annotation.PreferenceDataStore
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
@@ -17,13 +16,10 @@ class PreferenceDataStoreProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
 
-        // Get all classes with @PreferenceDataStore annotation
+        // 查找所有使用@PreferenceDataStore注解的类
         val symbols = resolver
-            .getSymbolsWithAnnotation(PreferenceDataStore::class.java.name)
+            .getSymbolsWithAnnotation("com.d10ng.datastore.annotation.PreferenceDataStore")
             .filterIsInstance<KSClassDeclaration>()
-
-        // If there is no class with @PreferenceDataStore annotation, return empty list
-        if (symbols.iterator().hasNext().not()) return emptyList()
 
         // Iterate over all classes with @PreferenceDataStore annotation
         symbols.forEach { symbol ->

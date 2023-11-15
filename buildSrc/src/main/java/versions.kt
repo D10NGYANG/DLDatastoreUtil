@@ -5,7 +5,7 @@ object Project {
 }
 
 const val lib_group = "com.github.D10NGYANG"
-const val lib_ver = "0.0.2"
+const val lib_ver = "0.0.3"
 
 const val android_build_ver = "8.1.3"
 const val compose_ver = "androidx.compose:compose-bom:2023.10.01"

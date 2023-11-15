@@ -57,9 +57,6 @@ dependencies {
     implementation("androidx.startup:startup-runtime:1.1.1")
     // kotlinx.serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_serialization_json")
-
-    // 注解
-    api(project(":annotation"))
 }
 
 val bds100MavenUsername: String by project

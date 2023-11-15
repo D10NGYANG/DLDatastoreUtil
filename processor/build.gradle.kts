@@ -17,7 +17,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":annotation"))
     // 反射
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_ver")
     // ksp

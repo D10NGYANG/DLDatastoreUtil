@@ -10,6 +10,7 @@ interface SettingData {
 
     @PreferenceKey
     val username: String
+        get() = "admin"
 
     @PreferenceKey
     val password: String

@@ -7,7 +7,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.encodeToString
 
-object AppDataStore: DataStoreOwner("appdata") {
+open class AppDataStore: DataStoreOwner("appdata") {
+
+    companion object {
+        val instant by lazy { AppDataStore() }
+    }
 
     fun getConfig1Flow() = dataStore.data.map { it[stringPreferencesKey("config1")] }
     suspend fun getConfig1() = getConfig1Flow().first()

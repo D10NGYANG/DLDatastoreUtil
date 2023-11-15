@@ -49,18 +49,18 @@ class MainActivity : ComponentActivity() {
 
         // 测试dataStore写入耗时
         val start = timeSource.markNow()
-        AppDataStore.setConfig1Sync("text ${System.currentTimeMillis()}")
+        AppDataStore.instant.setConfig1Sync("text ${System.currentTimeMillis()}")
         val end = timeSource.markNow()
         println("datastore write cost: ${end-start}")
         // 测试dataStore读取耗时
         val start2 = timeSource.markNow()
-        val config1 = AppDataStore.getConfig1Sync()
+        val config1 = AppDataStore.instant.getConfig1Sync()
         val end2 = timeSource.markNow()
         println("config1: $config1")
         println("datastore read cost: ${end2-start2}")
 
-        SettingDataStore.setSexSync("A", SexType.MAN)
-        println("read success: ${SettingDataStore.getSexSync("A") == SexType.MAN}")
+        SettingDataStore.instant.setSexSync("A", SexType.MAN)
+        println("read success: ${SettingDataStore.instant.getSexSync("A") == SexType.MAN}")
     }
 }
 

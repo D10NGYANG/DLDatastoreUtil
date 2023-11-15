@@ -15,6 +15,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "DLDatastoreUtil"
 include(":app")
-include(":annotation")
 include(":processor")
 include(":library")

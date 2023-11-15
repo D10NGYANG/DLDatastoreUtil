@@ -1,5 +1,7 @@
 package com.d10ng.datastore.processor
 
+import com.google.devtools.ksp.containingFile
+import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
@@ -30,7 +32,7 @@ class PreferenceDataStoreVisitor(
         logger.info("datastore name: $name")
 
         // 获取所有带有 @PreferenceKey 注解的属性
-        val properties = classDeclaration.getAllProperties()
+        val properties = classDeclaration.getDeclaredProperties()
             .filter { it.annotations.any { ann -> ann.shortName.asString() == "PreferenceKey" } }
 
         // Create file
@@ -49,7 +51,10 @@ class PreferenceDataStoreVisitor(
         file += "import kotlinx.serialization.encodeToString\n"
         file += "\n"
 
-        file += "object $fileName : DataStoreOwner(\"${name}\") {\n\n"
+        file += "open class $fileName : DataStoreOwner(\"${name}\") {\n\n"
+        file += "\tcompanion object {\n"
+        file += "\t\tval instant by lazy { $fileName() }\n"
+        file += "\t}\n\n"
 
         // 遍历所有属性
         properties.forEach { property ->
@@ -127,17 +132,17 @@ class PreferenceDataStoreVisitor(
             else "value"
 
             // 生成属性的 getter 方法
-            file += "\tfun get${funName}Flow(${getInputParams}) = dataStore.data.map { it[${propertyTypeKey}(\"${key}\")]${getPlusStr} }\n"
-            file += "\tsuspend fun get${funName}(${getInputParams}) = get${funName}Flow(${getCallParams}).first()\n"
-            file += "\tfun get${funName}Sync(${getInputParams}) = runBlocking { get${funName}(${getCallParams}) }\n"
+            file += "\topen fun get${funName}Flow(${getInputParams}) = dataStore.data.map { it[${propertyTypeKey}(\"${key}\")]${getPlusStr} }\n"
+            file += "\topen suspend fun get${funName}(${getInputParams}) = get${funName}Flow(${getCallParams}).first()\n"
+            file += "\topen fun get${funName}Sync(${getInputParams}) = runBlocking { get${funName}(${getCallParams}) }\n"
 
             // 生成属性的 setter 方法
-            file += "\tsuspend fun set${funName}(${setInputParams}) = dataStore.edit { it[${propertyTypeKey}(\"${key}\")] = $setPlusStr }\n"
-            file += "\tfun set${funName}Sync(${setInputParams}) = runBlocking { set${funName}(${setCallParams}) }\n"
+            file += "\topen suspend fun set${funName}(${setInputParams}) = dataStore.edit { it[${propertyTypeKey}(\"${key}\")] = $setPlusStr }\n"
+            file += "\topen fun set${funName}Sync(${setInputParams}) = runBlocking { set${funName}(${setCallParams}) }\n"
             file += "\n"
         }
 
-        file += "\n}"
+        file += "}"
 
         file.close()
     }
