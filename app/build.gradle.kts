@@ -89,6 +89,8 @@ dependencies {
     implementation(project(":library"))
     ksp(project(":processor"))
 
+    implementation(project(":example"))
+
     // 内存泄漏检查
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
 }

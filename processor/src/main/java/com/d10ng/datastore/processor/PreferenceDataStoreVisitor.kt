@@ -37,7 +37,7 @@ class PreferenceDataStoreVisitor(
 
         // Create file
         val file = codeGenerator.createNewFile(
-            dependencies = Dependencies(false),
+            dependencies = Dependencies(true),
             packageName = packageName,
             fileName = fileName
         )

@@ -15,6 +15,7 @@ class PreferenceDataStoreProcessor(
 ): SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        logger.info("DLDatastoreUtil-Processor 开始处理")
 
         // 查找所有使用@PreferenceDataStore注解的类
         val symbols = resolver
@@ -28,7 +29,7 @@ class PreferenceDataStoreProcessor(
                 logger.error("@PreferenceDataStore can only be used on interface, but ${symbol.qualifiedName?.asString()} is not a interface")
                 return emptyList()
             }
-
+            logger.info("symbol: ${symbol.qualifiedName?.asString()}")
             symbol.accept(PreferenceDataStoreVisitor(codeGenerator, logger, options), Unit)
         }
 

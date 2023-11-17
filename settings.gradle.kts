@@ -17,3 +17,4 @@ rootProject.name = "DLDatastoreUtil"
 include(":app")
 include(":processor")
 include(":library")
+include(":example")

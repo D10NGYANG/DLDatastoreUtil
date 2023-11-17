@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.d10ng.datastore.app.constant.SexType
 import com.d10ng.datastore.app.ui.theme.DLDatastoreUtilTheme
+import com.d10ng.datastore.example.TempRepository
 import kotlin.time.TimeSource
 
 class MainActivity : ComponentActivity() {
@@ -61,6 +62,10 @@ class MainActivity : ComponentActivity() {
 
         SettingDataStore.instant.setSexSync("A", SexType.MAN)
         println("read success: ${SettingDataStore.instant.getSexSync("A") == SexType.MAN}")
+
+        TempRepository.getKey1Sync()
+        TempRepository.getKey2Sync(1)
+        TempRepository.setKey2Sync(1, 2)
     }
 }
 

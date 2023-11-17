@@ -5,7 +5,7 @@ object Project {
 }
 
 const val lib_group = "com.github.D10NGYANG"
-const val lib_ver = "0.0.3"
+const val lib_ver = "0.0.4"
 
 const val android_build_ver = "8.1.3"
 const val compose_ver = "androidx.compose:compose-bom:2023.10.01"
@@ -14,5 +14,4 @@ const val kotlin_ver = "1.9.20"
 const val kotlin_coroutines_ver = "1.7.3"
 const val kotlin_serialization_json = "1.6.0"
 const val ksp_ver = "1.9.20-1.0.14"
-const val accompanist_ver = "0.32.0"
 const val jetpack_lifecycle_ver = "2.6.2"
