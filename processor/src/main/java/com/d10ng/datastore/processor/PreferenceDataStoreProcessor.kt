@@ -27,12 +27,11 @@ class PreferenceDataStoreProcessor(
             // If the class is not a interface, print error message and return empty list
             if (symbol.classKind.type != "interface") {
                 logger.error("@PreferenceDataStore can only be used on interface, but ${symbol.qualifiedName?.asString()} is not a interface")
-                return emptyList()
+            } else {
+                logger.info("symbol: ${symbol.qualifiedName?.asString()}")
+                symbol.accept(PreferenceDataStoreVisitor(codeGenerator, logger, options), Unit)
             }
-            logger.info("symbol: ${symbol.qualifiedName?.asString()}")
-            symbol.accept(PreferenceDataStoreVisitor(codeGenerator, logger, options), Unit)
         }
-
-        return symbols.filterNot { it.validate() }.toList()
+        return emptyList()
     }
 }

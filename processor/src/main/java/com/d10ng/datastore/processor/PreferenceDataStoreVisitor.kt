@@ -1,6 +1,5 @@
 package com.d10ng.datastore.processor
 
-import com.google.devtools.ksp.containingFile
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -35,9 +34,22 @@ class PreferenceDataStoreVisitor(
         val properties = classDeclaration.getDeclaredProperties()
             .filter { it.annotations.any { ann -> ann.shortName.asString() == "PreferenceKey" } }
 
+        // 根据属性类型添加相应的导入，如果属性类型的包路径与当前类所在的包路径一致，或者是 Kotlin 内置类型，则忽略
+        val paths = mutableSetOf<String>()
+        properties.forEach { property ->
+            val type = property.type.resolve()
+            if (type.declaration is KSClassDeclaration) {
+                val itemPackageName = type.declaration.packageName.asString()
+                val simpleName = type.declaration.simpleName.asString()
+                if (itemPackageName == packageName &&!simpleName.startsWith("kotlin")) {
+                    paths.add(packageName)
+                }
+            }
+        }
+
         // Create file
         val file = codeGenerator.createNewFile(
-            dependencies = Dependencies(true),
+            dependencies = Dependencies(false, classDeclaration.containingFile!!),
             packageName = packageName,
             fileName = fileName
         )
@@ -49,6 +61,12 @@ class PreferenceDataStoreVisitor(
         file += "import kotlinx.coroutines.flow.*\n"
         file += "import kotlinx.coroutines.*\n"
         file += "import kotlinx.serialization.encodeToString\n"
+        if (paths.isNotEmpty()) {
+            paths.forEach {
+                file += "import $it\n"
+            }
+        }
+
         file += "\n"
 
         file += "open class $fileName : DataStoreOwner(\"${name}\") {\n\n"

@@ -16,4 +16,7 @@ interface TempData {
 
     @PreferenceKey([Long::class])
     val key2: Int
+
+    @PreferenceKey([Float::class])
+    val key3: Float
 }

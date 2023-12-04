@@ -1,6 +1,8 @@
 package com.d10ng.datastore.app
 
 import com.d10ng.datastore.annotation.PreferenceDataStore
+import com.d10ng.datastore.annotation.PreferenceKey
+import com.d10ng.datastore.app.data.Person
 
 /**
  *
@@ -9,4 +11,13 @@ import com.d10ng.datastore.annotation.PreferenceDataStore
  */
 @PreferenceDataStore("config")
 interface ConfigData {
+
+    @PreferenceKey
+    val person: Person
+
+    @PreferenceKey
+    val age: Int
+
+    @PreferenceKey
+    val height: Float
 }
