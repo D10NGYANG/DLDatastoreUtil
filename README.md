@@ -2,7 +2,7 @@
 
 jetpack datastore 封装工具，减少模版代码，确保类型安全，避免类型或者键名不一致导致的异常；
 
-*最新版本`0.0.4`*
+*最新版本`0.0.5`*
 
 ## 参考
 - [DylanCaiCoding/DataStoreKTX](https://github.com/DylanCaiCoding/DataStoreKTX)
@@ -14,7 +14,7 @@ jetpack datastore 封装工具，减少模版代码，确保类型安全，避�
 - [x] 支持自定义datastore名称
 - [x] 支持枚举类型数据
 - [x] 支持基于kotlin.serialization的序列化data class类型数据
-- [ ] 支持设置默认值
+- [x] 支持设置默认值 **暂时只能以字符串的形式去设置默认值，因为KSP本身还不支持去读取参数的默认值**
 
 ## 安装说明
 1 添加Maven仓库，打开项目根目录`settings.gradle.kts`文件添加以下内容：
@@ -86,7 +86,7 @@ interface SettingData {
 ```
 自动生成模版代码：
 ```kotlin
-data class SettingDataStore : DataStoreOwner("settings") {
+open class SettingDataStore : DataStoreOwner("settings") {
     
     companion object {
         val instance by lazy { SettingDataStore() }
@@ -130,3 +130,13 @@ open suspend fun setAllowOpen(key0: String, key1: Int, value: Boolean) = dataSto
 open fun setAllowOpenSync(key0: String, key1: Int, value: Boolean) = runBlocking { setAllowOpen(key0, key1, value) }
 ```
 > 这种主要作用在于，假设一种数据是属于不同用户的，那么可以使用这种方式来区分不同用户的数据，例如：allowOpen:${userId}:${funId}
+
+4 设置默认值
+```kotlin
+@PreferenceKey(default = "\"d10ng\"")
+val username: String
+
+@PreferenceKey(default = "123456")
+val age: Int
+```
+> 这种方式就是将您所输入的字符串作为模版拼接到生成的代码中，是一个取巧的方式，待后续KSP支持读取参数值后可能会弃用；
