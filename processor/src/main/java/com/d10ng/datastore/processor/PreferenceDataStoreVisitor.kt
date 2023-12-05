@@ -23,7 +23,8 @@ class PreferenceDataStoreVisitor(
 
         // 获取类注解中的参数
         val annotation = classDeclaration.annotations.find { it.shortName.asString() == "PreferenceDataStore" }
-        val name = annotation?.arguments?.find { it.name?.asString() == "name" }?.value?.toString()?.replace("\"", "") ?: className
+        var name = annotation?.arguments?.find { it.name?.asString() == "name" }?.value?.toString()?.replace("\"", "")
+        if (name.isNullOrEmpty()) name = className
 
         logger.info("packageName: $packageName")
         logger.info("className: $className")
@@ -41,8 +42,8 @@ class PreferenceDataStoreVisitor(
             if (type.declaration is KSClassDeclaration) {
                 val itemPackageName = type.declaration.packageName.asString()
                 val simpleName = type.declaration.simpleName.asString()
-                if (itemPackageName == packageName &&!simpleName.startsWith("kotlin")) {
-                    paths.add(packageName)
+                if (itemPackageName != packageName && !itemPackageName.startsWith("kotlin")) {
+                    paths.add("${itemPackageName}.${simpleName}")
                 }
             }
         }
@@ -66,7 +67,6 @@ class PreferenceDataStoreVisitor(
                 file += "import $it\n"
             }
         }
-
         file += "\n"
 
         file += "open class $fileName : DataStoreOwner(\"${name}\") {\n\n"
@@ -99,7 +99,7 @@ class PreferenceDataStoreVisitor(
                 return
             }
             val propertyTypeName = if (propertyTypePackageName.startsWith("kotlin", true)) propertyType.toString()
-            else propertyType.declaration.qualifiedName?.asString() ?: "String"
+            else propertyType.declaration.simpleName.asString()
             logger.info("${propertyName}: $propertyTypeName")
             // Set只支持String类型
             if (propertyTypeName.startsWith("Set") && !propertyTypeName.endsWith("<String>")) {
@@ -149,8 +149,12 @@ class PreferenceDataStoreVisitor(
                 "json.encodeToString(value)"
             else "value"
 
+            // 获取默认值
+            var defaultValue = propertyAnnotation?.arguments?.find { it.name?.asString() == "default" }?.value as String?
+            defaultValue = if (defaultValue.isNullOrEmpty()) "" else "?: $defaultValue"
+
             // 生成属性的 getter 方法
-            file += "\topen fun get${funName}Flow(${getInputParams}) = dataStore.data.map { it[${propertyTypeKey}(\"${key}\")]${getPlusStr} }\n"
+            file += "\topen fun get${funName}Flow(${getInputParams}) = dataStore.data.map { it[${propertyTypeKey}(\"${key}\")]${getPlusStr}${defaultValue} }\n"
             file += "\topen suspend fun get${funName}(${getInputParams}) = get${funName}Flow(${getCallParams}).first()\n"
             file += "\topen fun get${funName}Sync(${getInputParams}) = runBlocking { get${funName}(${getCallParams}) }\n"
 

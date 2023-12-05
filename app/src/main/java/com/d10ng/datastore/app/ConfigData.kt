@@ -12,10 +12,10 @@ import com.d10ng.datastore.app.data.Person
 @PreferenceDataStore("config")
 interface ConfigData {
 
-    @PreferenceKey
+    @PreferenceKey()
     val person: Person
 
-    @PreferenceKey
+    @PreferenceKey(default = "18")
     val age: Int
 
     @PreferenceKey

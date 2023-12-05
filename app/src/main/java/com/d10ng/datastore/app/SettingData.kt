@@ -8,7 +8,7 @@ import com.d10ng.datastore.app.data.Person
 @PreferenceDataStore(name = "settings")
 interface SettingData {
 
-    @PreferenceKey
+    @PreferenceKey(default = "\"d10ng\"")
     val username: String
 
     @PreferenceKey

@@ -73,7 +73,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     // Integration with activities
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.activity:activity-compose:1.8.1")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$jetpack_lifecycle_ver")
