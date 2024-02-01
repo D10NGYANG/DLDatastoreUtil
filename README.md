@@ -2,7 +2,7 @@
 
 jetpack datastore 封装工具，减少模版代码，确保类型安全，避免类型或者键名不一致导致的异常；
 
-*最新版本`0.0.6`*
+*最新版本`0.0.7`*
 
 ## 参考
 - [DylanCaiCoding/DataStoreKTX](https://github.com/DylanCaiCoding/DataStoreKTX)
@@ -56,7 +56,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     // kotlinx.serialization 可选，如果需要支持data class类型数据
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 }
 ```
 
