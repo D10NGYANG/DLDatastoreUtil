@@ -2,7 +2,7 @@
 
 jetpack datastore 封装工具，减少模版代码，确保类型安全，避免类型或者键名不一致导致的异常；
 
-*最新版本`0.0.7`*
+*最新版本`0.0.8`*
 
 ## 参考
 - [DylanCaiCoding/DataStoreKTX](https://github.com/DylanCaiCoding/DataStoreKTX)
