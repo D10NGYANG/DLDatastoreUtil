@@ -1,42 +1,35 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")
+    alias(libs.plugins.kotlinMultiplatform)
     id("maven-publish")
 }
 
-group = lib_group
-version = lib_ver
-
-java {
-    withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
+group = libs.versions.lib.group.get()
+version = libs.versions.lib.ver.get()
 
 kotlin {
     jvmToolchain(8)
-}
-
-dependencies {
-    // 反射
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_ver")
-    // ksp
-    implementation("com.google.devtools.ksp:symbol-processing-api:$ksp_ver")
+    jvm {
+        withJava()
+    }
+    sourceSets {
+        jvmMain {
+            dependencies {
+                // 反射
+                implementation(kotlin("reflect"))
+                // ksp
+                implementation(libs.symbol.processing.api)
+            }
+            kotlin.srcDir("src/main/kotlin")
+            resources.srcDir("src/main/resources")
+        }
+    }
 }
 
 val bds100MavenUsername: String by project
 val bds100MavenPassword: String by project
 
 publishing {
-    publications {
-        create("release", MavenPublication::class) {
-            artifactId = "DLDatastoreUtil-Processor"
-            from(components.getByName("java"))
-        }
-    }
     repositories {
-        maven {
-            url = uri("/Users/d10ng/project/kotlin/maven-repo/repository")
-        }
         maven {
             credentials {
                 username = bds100MavenUsername

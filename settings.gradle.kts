@@ -1,20 +1,34 @@
+rootProject.name = "DLDatastoreUtil-Project"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
-        google()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
         mavenCentral()
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
         mavenCentral()
+        maven("https://raw.githubusercontent.com/D10NGYANG/maven-repo/main/repository")
     }
 }
 
-rootProject.name = "DLDatastoreUtil"
-include(":app")
-include(":processor")
-include(":library")
-include(":example")
+include( ":library", ":processor")
+project(":library").name = "DLDatastoreUtil"
+project(":processor").name = "DLDatastoreUtil-Processor"

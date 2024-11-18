@@ -1,73 +1,72 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinSerialization)
     id("maven-publish")
 }
 
-group = lib_group
-version = lib_ver
+group = libs.versions.lib.group.get()
+version = libs.versions.lib.ver.get()
+
+kotlin {
+    jvmToolchain(8)
+    androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
+        }
+        publishLibraryVariants("release")
+    }
+    iosArm64()
+    iosX64()
+    iosSimulatorArm64()
+
+    sourceSets {
+        commonMain.dependencies {
+            // 协程
+            implementation(libs.kotlinx.coroutines)
+            // dataStore
+            api(libs.androidx.datastore.preferences)
+            // kotlin-serialization
+            implementation(libs.kotlinx.serialization.json)
+        }
+        androidMain.dependencies {
+            // 协程 Android
+            implementation(libs.kotlinx.coroutines.android)
+            // startup
+            implementation(libs.androidx.startup.runtime)
+        }
+    }
+}
 
 android {
     namespace = "com.d10ng.datastore"
-    compileSdk = android_compile_sdk
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = android_min_sdk
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
-}
-
-dependencies {
-    // 单元测试（可选）
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
-    // dataStore
-    api("androidx.datastore:datastore-preferences:1.1.1")
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_ver")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_ver")
-    // startup
-    implementation("androidx.startup:startup-runtime:1.1.1")
-    // kotlinx.serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_serialization_json")
 }
 
 val bds100MavenUsername: String by project
 val bds100MavenPassword: String by project
 
+val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+}
+
 afterEvaluate {
     publishing {
         publications {
-            create("release", MavenPublication::class) {
-                artifactId = "DLDatastoreUtil"
-                from(components.getByName("release"))
+            withType(MavenPublication::class) {
+                artifact(tasks["javadocJar"])
             }
         }
         repositories {
