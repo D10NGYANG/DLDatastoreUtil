@@ -1,28 +1,31 @@
 package com.d10ng.datastore
 
-import android.app.Application
-import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.serialization.json.Json
+import okio.Path.Companion.toPath
+
+internal expect fun createDataStoreByName(name: String): DataStore<Preferences>
+
+internal fun createDataStore(producePath: () -> String): DataStore<Preferences> =
+    PreferenceDataStoreFactory.createWithPath(
+        produceFile = { producePath().toPath() }
+    )
+
 
 open class DataStoreOwner(name: String) : IDataStoreOwner {
-    private val Context.dataStore by preferencesDataStore(name)
-    override val dataStore: DataStore<Preferences> get() = context.dataStore
+    override val dataStore: DataStore<Preferences> by lazy { createDataStoreByName(name) }
 
     val json = IDataStoreOwner.json
 }
 
 interface IDataStoreOwner {
-    val context: Context get() = application
     val dataStore: DataStore<Preferences>
 
     companion object {
-        internal lateinit var application: Application
 
         /** 自定义规则的JSON工具 */
-        @JvmStatic
         val json by lazy {
             Json {
                 // 忽略JSON字符串里有但data class中没有的key
