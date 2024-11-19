@@ -57,10 +57,10 @@ dependencies {
     implementation("com.github.D10NGYANG:DLDatastoreUtil:$ver")
     ksp("com.github.D10NGYANG:DLDatastoreUtil-Processor:$ver")
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     // kotlinx.serialization 可选，如果需要支持data class类型数据
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 }
 ```
 
@@ -77,16 +77,22 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
             dependencies {
                 // jetpack datastore 封装工具
-                implementation(project(":DLDatastoreUtil"))
+                implementation("com.github.D10NGYANG:DLDatastoreUtil:$ver")
+                // Coroutines
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
                 // kotlinx.serialization 可选，如果需要支持data class类型数据
-                implementation(libs.kotlinx.serialization.json)
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
             }
+        }
+        androidMain.dependencies {
+            // Coroutines
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
         }
     }
 }
 
 dependencies {
-    add("kspCommonMainMetadata", project(":DLDatastoreUtil-Processor"))
+    add("kspCommonMainMetadata", "com.github.D10NGYANG:DLDatastoreUtil-Processor:$ver")
 }
 ```
 
