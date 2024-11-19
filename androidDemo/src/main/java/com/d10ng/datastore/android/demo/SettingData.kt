@@ -1,0 +1,43 @@
+package com.d10ng.datastore.android.demo
+
+import com.d10ng.datastore.android.demo.constant.SexType
+import com.d10ng.datastore.android.demo.data.Person
+import com.d10ng.datastore.annotation.PreferenceDataStore
+import com.d10ng.datastore.annotation.PreferenceKey
+
+@PreferenceDataStore(name = "settings")
+interface SettingData {
+
+    @PreferenceKey(default = "\"d10ng\"")
+    val username: String
+
+    @PreferenceKey
+    val password: String
+
+    @PreferenceKey(keys = [String::class])
+    val phone: String
+
+    @PreferenceKey(keys = [String::class])
+    val age: Int
+
+    @PreferenceKey(keys = [String::class])
+    val createTimestamp: Long
+
+    @PreferenceKey(keys = [String::class])
+    val height: Float
+
+    @PreferenceKey(keys = [String::class])
+    val weight: Double
+
+    @PreferenceKey(keys = [String::class])
+    val sex: SexType
+
+    @PreferenceKey(keys = [String::class, Int::class])
+    val allowOpen: Boolean
+
+    @PreferenceKey(keys = [String::class])
+    val things: Set<String>
+
+    @PreferenceKey(keys = [String::class])
+    val person: Person
+}
