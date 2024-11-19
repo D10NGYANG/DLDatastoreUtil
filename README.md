@@ -2,7 +2,9 @@
 
 jetpack datastore 封装工具，减少模版代码，确保类型安全，避免类型或者键名不一致导致的异常；
 
-*最新版本`0.0.8`*
+*最新版本`0.1.0`*
+
+> ⚠️ 从`0.1.0`开始，转换成`kotlin multiplatform`架构，支持Android、iOS；
 
 ## 参考
 - [DylanCaiCoding/DataStoreKTX](https://github.com/DylanCaiCoding/DataStoreKTX)
@@ -17,7 +19,7 @@ jetpack datastore 封装工具，减少模版代码，确保类型安全，避�
 - [x] 支持设置默认值 **暂时只能以字符串的形式去设置默认值，因为KSP本身还不支持去读取参数的默认值**
 
 ## 安装说明
-1 添加Maven仓库，打开项目根目录`settings.gradle.kts`文件添加以下内容：
+1、添加Maven仓库，打开项目根目录`settings.gradle.kts`文件添加以下内容：
 ```kts
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -29,7 +31,7 @@ dependencyResolutionManagement {
 }
 ```
 
-2 添加`ksp`插件，打开项目根目录`build.gradle.kts`文件添加以下内容，`ksp_ver`为ksp版本，最新版本请查阅[google/ksp](https://github.com/google/ksp/releases)：
+2、添加`ksp`插件，打开项目根目录`build.gradle.kts`文件添加以下内容，`ksp_ver`为ksp版本，最新版本请查阅[google/ksp](https://github.com/google/ksp/releases)：
 ```kts
 plugins {
     id("com.google.devtools.ksp") version ksp_ver apply false
@@ -46,7 +48,9 @@ plugins {
 }
 ```
 
-3 添加依赖
+3、添加依赖
+
+3.1、Android项目
 ```kts
 dependencies {
     // jetpack datastore 封装工具
@@ -60,14 +64,40 @@ dependencies {
 }
 ```
 
-4 混淆
+3.2、compose项目
+```kts
+kotlin {
+    androidTarget()
+    iosArm64()
+    iosSimulatorArm64()
+
+    sourceSets {
+        commonMain {
+            // 生成文件进行连接
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+            dependencies {
+                // jetpack datastore 封装工具
+                implementation(project(":DLDatastoreUtil"))
+                // kotlinx.serialization 可选，如果需要支持data class类型数据
+                implementation(libs.kotlinx.serialization.json)
+            }
+        }
+    }
+}
+
+dependencies {
+    add("kspCommonMainMetadata", project(":DLDatastoreUtil-Processor"))
+}
+```
+
+4、混淆
 ```properties
 -keep class com.d10ng.datastore.** {*;}
 -dontwarn com.d10ng.datastore.**
 ```
 
 ## 使用说明
-1 创建一个`datastore`，例如：
+1、创建一个`datastore`，例如：
 ```kotlin
 // 创建一个名为settings的datastore，name参数可以省略，默认为类名
 // 该类会自动生成一个SettingsDataStore类，用于操作datastore
@@ -75,7 +105,7 @@ dependencies {
 interface SettingData
 ```
 
-2 创建一个`datastore`的`key`，例如：
+2、创建一个`datastore`的`key`，例如：
 ```kotlin
 @PreferenceDataStore(name = "settings")
 interface SettingData {
@@ -115,7 +145,7 @@ open class SettingDataStore : DataStoreOwner("settings") {
 > - data class类型的数据解析与反解析是基于kotlin.serialization的，所以需要在data class类上添加`@Serializable`注解，且不要轻易修改data class的属性名；
 > - 除非别无选择，否则不建议使用同步方法，会阻塞主线程，耗时会比MMKV与传统的Spf要长，优先使用异步方法；
 
-3 创建带参数的`datastore`的`key`，例如：
+3、创建带参数的`datastore`的`key`，例如：
 ```kotlin
 // 生成的key为：username:${key0}:${key1}
 @PreferenceKey(keys = [String::class, Int::class])
@@ -131,7 +161,7 @@ open fun setAllowOpenSync(key0: String, key1: Int, value: Boolean) = runBlocking
 ```
 > 这种主要作用在于，假设一种数据是属于不同用户的，那么可以使用这种方式来区分不同用户的数据，例如：allowOpen:${userId}:${funId}
 
-4 设置默认值
+4 、设置默认值
 ```kotlin
 @PreferenceKey(default = "\"d10ng\"")
 val username: String
