@@ -32,4 +32,4 @@ dependencyResolutionManagement {
 include( ":library", ":processor")
 project(":library").name = "DLDatastoreUtil"
 project(":processor").name = "DLDatastoreUtil-Processor"
-include(":androidDemo")
+include(":androidDemo", ":composeDemo")
