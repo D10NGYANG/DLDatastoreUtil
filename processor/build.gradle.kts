@@ -31,6 +31,9 @@ val bds100MavenPassword: String by project
 publishing {
     repositories {
         maven {
+            url = uri("/Users/d10ng/project/kotlin/maven-repo/repository")
+        }
+        maven {
             credentials {
                 username = bds100MavenUsername
                 password = bds100MavenPassword
