@@ -4,3 +4,4 @@ build
 /*/build
 /*/.gradle
 .kotlin
+local.properties
