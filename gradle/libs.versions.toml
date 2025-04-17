@@ -1,7 +1,7 @@
 [versions]
 datastorePreferences = "1.1.4"
 lib_group = "com.github.D10NGYANG"
-lib_ver = "0.2.0"
+lib_ver = "0.2.1"
 agp = "8.5.2"
 android-compileSdk = "34"
 android-minSdk = "26"

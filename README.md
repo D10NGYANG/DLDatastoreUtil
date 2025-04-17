@@ -2,7 +2,7 @@
 
 jetpack datastore 封装工具，减少模版代码，确保类型安全，避免类型或者键名不一致导致的异常；
 
-*最新版本`0.2.0`*
+*最新版本`0.2.1`*
 
 > ⚠️ 从`0.1.0`开始，转换成`kotlin multiplatform`架构，支持Android、iOS；
 

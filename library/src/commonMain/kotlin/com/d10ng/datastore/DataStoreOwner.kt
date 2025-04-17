@@ -15,7 +15,10 @@ internal fun createDataStore(producePath: () -> String): DataStore<Preferences> 
 
 
 open class DataStoreOwner(name: String) : IDataStoreOwner {
-    override val dataStore: DataStore<Preferences> by lazy { createDataStoreByName(name) }
+    override val dataStore: DataStore<Preferences> by lazy {
+        val fileName = if (name.endsWith(".preferences_pb")) name else "${name}.preferences_pb"
+        createDataStoreByName(fileName)
+    }
 
     val json = IDataStoreOwner.json
 }
