@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlin.multiplatform)
     id("maven-publish")
 }
 
@@ -8,9 +8,7 @@ version = libs.versions.lib.ver.get()
 
 kotlin {
     jvmToolchain(8)
-    jvm {
-        withJava()
-    }
+    jvm()
     sourceSets {
         jvmMain {
             dependencies {
