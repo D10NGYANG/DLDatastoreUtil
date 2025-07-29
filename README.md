@@ -2,7 +2,7 @@
 
 jetpack datastore 封装工具，减少模版代码，确保类型安全，避免类型或者键名不一致导致的异常；
 
-*最新版本`0.2.1`*
+*最新版本`0.2.2`*
 
 > ⚠️ 从`0.1.0`开始，转换成`kotlin multiplatform`架构，支持Android、iOS；
 
@@ -60,7 +60,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     // kotlinx.serialization 可选，如果需要支持data class类型数据
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 }
 ```
 
@@ -81,7 +81,7 @@ kotlin {
                 // Coroutines
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
                 // kotlinx.serialization 可选，如果需要支持data class类型数据
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
             }
         }
         androidMain.dependencies {
