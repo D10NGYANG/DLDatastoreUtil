@@ -29,6 +29,10 @@ dependencyResolutionManagement {
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 include( ":library", ":processor")
 project(":library").name = "DLDatastoreUtil"
 project(":processor").name = "DLDatastoreUtil-Processor"
