@@ -39,7 +39,7 @@ dependencyResolutionManagement {
 
 2、添加依赖
 
-### 2.1 Android项目
+2.1、Android项目
 ```kts
 dependencies {
     // jetpack datastore 封装工具
@@ -56,7 +56,7 @@ dependencies {
 }
 ```
 
-### 2.2 Compose Multiplatform 项目
+2.2、Compose Multiplatform 项目
 ```kts
 kotlin {
     sourceSets {
@@ -87,7 +87,7 @@ kotlin {
 
 从 0.3.0 版本开始，我们引入了基于 **Kotlin 委托属性 (Delegated Properties)** 的新方案，全面解决旧版 KSP 模式的痛点。
 
-### 1. 核心功能与优势
+1、核心功能与优势
 
 | 特性 | 旧版 (KSP 模式) | 新版 (委托模式) | 优势 |
 | :--- | :--- | :--- | :--- |
@@ -96,9 +96,9 @@ kotlin {
 | **动态 Key** | 通过 `@PreferenceKey(keys=...)` 支持 | **`mapPreference`** | 类似 `Map` 操作，更符合直觉 |
 | **配置复杂度** | 需配置 KSP 插件和路径 | **零配置** | 引入库依赖即可使用 |
 
-### 2. 快速上手
+2、快速上手
 
-#### 2.1 定义 DataStore
+2.1、定义 DataStore
 直接创建一个继承自 `BaseDataStore` 的 `object` (单例) 或 `class`。
 
 ```kotlin
@@ -124,7 +124,7 @@ object AppSettings : BaseDataStore("app_settings") {
 }
 ```
 
-#### 2.2 调用方式
+2.2、调用方式
 
 无需记忆 `getXXXFlow`, `setXXXSync` 等生成方法，新版 API 更加统一：
 
@@ -152,14 +152,14 @@ AppSettings.userScores["user_001"].set(100)
 val score = AppSettings.userScores["user_001"].get()
 ```
 
-### 3. 从旧版迁移指南
+3、从旧版迁移指南
 
-#### 3.1 迁移步骤
+3.1、迁移步骤
 1.  **移除 KSP 插件** (可选)：如果项目中不再有其他 KSP 依赖，可以移除 `build.gradle.kts` 中的 KSP 插件配置。
 2.  **重写 DataStore 定义**：将带有 `@PreferenceDataStore` 的接口改写为继承 `BaseDataStore` 的 `object`。
 3.  **替换调用处**：利用 IDE 的“查找替换”功能，更新调用逻辑。
 
-#### 3.2 代码对比
+3.2、代码对比
 
 **旧版 (Interface + Annotation)**
 ```kotlin
@@ -185,7 +185,7 @@ SettingData.username.flow
 SettingData.username.set("new")
 ```
 
-#### 3.3 常见问题与注意事项
+3.3、常见问题与注意事项
 
 *   **⚠️ Data Class 序列化**：使用 `objectPreference` 或 `mapPreference` 存储对象时，该对象类**必须**添加 `@Serializable` 注解。
 *   **兼容性**：新旧方案底层均使用 Jetpack DataStore，只要**文件名 (name)** 和 **Key 名称** 保持一致，数据是可以**无缝互通**的。
