@@ -210,6 +210,7 @@ open class BaseDataStore(name: String) : DataStoreOwner(name) {
                 ObjectPreferenceItemImpl(dataStore, stringPreferencesKey(fullKeyName), default, serializer, json)
             } else {
                 // Basic type
+                @Suppress("UNCHECKED_CAST")
                 PreferenceItemImpl(dataStore, prefKey as Preferences.Key<V>, default)
             }
         }

@@ -1,6 +1,6 @@
 [versions]
 lib_group = "com.github.D10NGYANG"
-lib_ver = "0.2.2"
+lib_ver = "0.3.0"
 agp = "8.11.1"
 android-compileSdk = "36"
 android-minSdk = "26"
