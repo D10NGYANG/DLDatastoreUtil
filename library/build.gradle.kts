@@ -32,6 +32,8 @@ kotlin {
             api(libs.androidx.datastore.preferences)
             // kotlin-serialization
             implementation(libs.kotlinx.serialization.json)
+            // 日志
+            implementation(libs.dl.log)
         }
         androidMain.dependencies {
             // 协程 Android

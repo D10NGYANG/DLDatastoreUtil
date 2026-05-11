@@ -11,6 +11,8 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.d10ng.datastore.DataStoreOwner
+import com.d10ng.datastore.logPreferenceRead
+import com.d10ng.datastore.logPreferenceWrite
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -141,10 +143,17 @@ open class BaseDataStore(name: String) : DataStoreOwner(name) {
         private val default: T
     ) : PreferenceItem<T> {
         override val flow: Flow<T> = dataStore.data.map { it[key] ?: default }
-        override suspend fun get(): T = flow.first()
+        override suspend fun get(): T {
+            val pref = dataStore.data.first()
+            val isDefault = !pref.contains(key)
+            val value = pref[key] ?: default
+            logPreferenceRead(key.name, value, isDefault)
+            return value
+        }
         override fun getSync(): T = runBlocking { get() }
         override suspend fun set(value: T) {
             dataStore.edit { it[key] = value }
+            logPreferenceWrite(key.name, value)
         }
         override fun setSync(value: T) = runBlocking { set(value) }
     }
@@ -159,11 +168,18 @@ open class BaseDataStore(name: String) : DataStoreOwner(name) {
         override val flow: Flow<T> = dataStore.data.map { pref ->
             pref[key]?.let { json.decodeFromString(serializer, it) } ?: default
         }
-        override suspend fun get(): T = flow.first()
+        override suspend fun get(): T {
+            val pref = dataStore.data.first()
+            val stored = pref[key]
+            val value = stored?.let { json.decodeFromString(serializer, it) } ?: default
+            logPreferenceRead(key.name, value, stored == null)
+            return value
+        }
         override fun getSync(): T = runBlocking { get() }
         override suspend fun set(value: T) {
             val jsonStr = json.encodeToString(serializer, value)
             dataStore.edit { it[key] = jsonStr }
+            logPreferenceWrite(key.name, value)
         }
         override fun setSync(value: T) = runBlocking { set(value) }
     }
@@ -177,10 +193,17 @@ open class BaseDataStore(name: String) : DataStoreOwner(name) {
         override val flow: Flow<T> = dataStore.data.map { pref ->
             pref[key]?.let { name -> enumValues.find { it.name == name } } ?: default
         }
-        override suspend fun get(): T = flow.first()
+        override suspend fun get(): T {
+            val pref = dataStore.data.first()
+            val stored = pref[key]
+            val value = stored?.let { name -> enumValues.find { it.name == name } } ?: default
+            logPreferenceRead(key.name, value, stored == null)
+            return value
+        }
         override fun getSync(): T = runBlocking { get() }
         override suspend fun set(value: T) {
             dataStore.edit { it[key] = value.name }
+            logPreferenceWrite(key.name, value)
         }
         override fun setSync(value: T) = runBlocking { set(value) }
     }

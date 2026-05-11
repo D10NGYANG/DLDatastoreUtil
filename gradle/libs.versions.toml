@@ -1,6 +1,6 @@
 [versions]
 lib_group = "com.github.D10NGYANG"
-lib_ver = "0.3.0"
+lib_ver = "0.4.0"
 agp = "8.11.1"
 android-compileSdk = "36"
 android-minSdk = "26"
@@ -17,6 +17,7 @@ kotlin = "2.2.0"
 ksp = "2.2.0-2.0.2"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization-json = "1.9.0"
+dl-log = "0.2.1"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -31,6 +32,7 @@ kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core",
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+dl-log = { module = "com.github.D10NGYANG:DLLogUtil", version.ref = "dl-log" }
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "agp" }
